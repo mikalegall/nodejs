@@ -1,7 +1,7 @@
-POST http://localhost:3001/tamaOnSovelluksenEndpointEliURI
+POST http://localhost:3001/api/persons
 content-type: application/json
 
 {
-    "content": "VS-Coden REST-client toimii myös",
-     "important": false
+    "nimi": "Mika Le Gall",
+	"numero": "059-987 65 43"
 }
