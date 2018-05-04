@@ -81,7 +81,7 @@ const bodyParser = require('body-parser')	// Node.js-express: body-parser kirjas
 app.use(bodyParser.json())
 
 // Lisätään REST toteutuksen tynkää... POST yksi kpl
-app.post('/tamaOnSovelluksenEndpointEliURI', (pyynto, vastaus) => {
+app.post('/api/persons', (pyynto, vastaus) => {
   const alkioOlio = pyynto.body
 	console.log('POSTin alkioOlio (body) =', alkioOlio)
 		console.log('Pyynnön "POST yksi kpl" mukana tulleet headerit ovat (ALKAA)', pyynto.headers)
@@ -89,28 +89,41 @@ app.post('/tamaOnSovelluksenEndpointEliURI', (pyynto, vastaus) => {
 
 
 const uusiOlio = pyynto.body
+/*
 // const maxId = taulukkoonTallennettujaOlioita.length > 0 ? taulukkoonTallennettujaOlioita.map(alkioOlio => alkioOlio.id).sort().reverse()[0] : 0
 // uusiOlio.id = maxId + 1
 const generateId = () => {
   const maxId = taulukkoonTallennettujaOlioita.length > 0 ? taulukkoonTallennettujaOlioita.map(alkioOlio => alkioOlio.id).sort().reverse()[0] : 0
   return maxId + 1
+  */
+ function getRandomInt(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+  }
+
+
+if (uusiOlio.nimi === undefined) {
+	return vastaus.status(400).json({error: 'Sisältö puuttuu, lisää "NIMI"'})
+}
+
+if (uusiOlio.numero === undefined) {
+	return vastaus.status(400).json({error: 'Sisältö puuttuu, lisää "NUMERO"'})
 }
 
 
-if (uusiOlio.content === undefined) {
-		return vastaus.status(400).json({error: 'Sisältö puuttuu, lisää "content"'})
-	}
-
+taulukkoonTallennettujaOlioita.map(alkioOlio =>
+				alkioOlio.nimi === uusiOlio.nimi ? vastaus.status(400).json({error: 'Vain yksilölliset nimet sallittaan...'}) : 0
+								  )
+// TODO: Estä tiedon lisääminen mikäli on jo tallennettuna taulukkoon!!!
 
 const uusiOlioMuokattu = {
-    id: generateId(),
-	content: uusiOlio.content,
-	date: new Date(),
-    important: uusiOlio.important || false	// Or-lauseessa ei siirrytä oikealle puolelle mikäli vasemman puolen ehto täyttyy
+    id: getRandomInt(9999),
+	nimi: uusiOlio.nimi,
+	numero: uusiOlio.numero
+    // important: uusiOlio.important || false	// Or-lauseessa ei siirrytä oikealle puolelle mikäli vasemman puolen ehto täyttyy
 											// eli mikäli "important" kenttään on asetettu jokin arvo
 }
 
-	  
+
 taulukkoonTallennettujaOlioita = taulukkoonTallennettujaOlioita.concat(uusiOlioMuokattu)	// Tehdään kopio (concat), johon muutos toteutetaan. Tässä tapahtuu
 																							// varsinainen tallennus palvelimen muistiin
 		
@@ -158,5 +171,3 @@ app.get('/info', (pyynto, vastaus) => {
 	vastaus.send('Puhelinluettelossa ' + taulukkoonTallennettujaOlioita.length + ' henkilön tiedot' + '<br />' + new Date())	// Vastauksen "json" metodi saa content-type-headerin arvoksi application/json
 													// NodeJS-expressiä käytettäessä muunnos tapahtuu automaattisesti ilman stringify-metodia
 	})
-	
-	
