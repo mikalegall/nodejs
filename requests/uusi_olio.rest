@@ -1,7 +1,13 @@
+
 POST http://localhost:3001/api/persons
 content-type: application/json
 
 {
     "nimi": "Arto Järvinen",
-	"numero": "059-987 65 43"
+     "numero": "059-987 65 43"
 }
+
+
+# Asenna VS Coden REST client -plugini osoitteesta https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+# Uudelleenkäynnistä VS Code ja napsauta sen jälkeen testattavan endpointin yläpuolelle ilmestyvää "Send Request" tekstiä
+# (jostain kumman syystä "Send Request" teksti saattaa toisinaan olla vaikeahko saada ilmestymään, joten vierittele tarvittaessa edestakaisin endpoint piiloon ja näkyviin)
