@@ -47,36 +47,6 @@ JavaScriptissä ES6-moduulin käyttöönotossa voitaisiin sanoa myös suoraan va
 */
 const app = express()
 
-app.get('/', (pyynto, vastaus) =>
-	{
-		console.log('"Juureen" tehdyn pyynnön mukana tulleet headerit ovat (ALKAA)', pyynto.headers)
-		console.log('Pyynnön mukana tulleet headerit (LOPPUU)')
-	vastaus.send('<h1>Tervehdys vaan teillekin!</h1>')	// Vastauksen "send" metodi saa stringistä johtuen content-type-headerin arvoksi text/html
-	}
-)
-
-
-// Lisätään REST toteutuksen tynkää... Hae kaikki
-/*
-Node on Googlen chrome V8 -JavaScriptmoottoriin perustuva JavaScriptin suoritusympäristö,
-jolla on paketinhallintaympäristö NPM (node packet manager). Sieltä löytyy web-server paketti nimeltä Express,
-joka sisältää tarvittavat tiedostot HTTP-palvelin moduulin toteuttamiseksi.
-*/
-// Route on muotoa app.METHOD(PATH, HANDLER) oleva resurssi, jossa
-// 'app' nimiseen muuttujaan on sijoitettu Express-palvelinsovellusta vastaava olio.
-/*
-HTTP-metodi on kohdassa METHOD joko 'get', 'post', 'put' tai 'delete',
-endpoint on URI:a määrittelevä 'loremipsus'-osoite kohdassa PATH kuten esim. ('/api/persons'), ja
-tapahtuman käsittelijä on foobar(request, response) kohdassa HANDLER kuten esim. 'function (pyynto, vastaus)'
-*/
-app.get('/api/persons', (pyynto, vastaus) => {
-
-		console.log('Endpointtiin tehdyn "Hae kaikki" pyynnön mukana tulleet headerit ovat (ALKAA)', pyynto.headers)
-		console.log('Pyynnön mukana tulleet headerit (LOPPUU)')
-	vastaus.json(taulukkoonTallennettujaOlioita)	// Vastauksen "json" metodi saa content-type-headerin arvoksi application/json
-													// NodeJS-expressiä käytettäessä muunnos tapahtuu automaattisesti ilman stringify-metodia
-	})
-
 
 
 /* const port = 3001
@@ -114,7 +84,6 @@ morgan('tiny')
 morgan(':method :url :status :res[content-length] - :response-time ms')
 */
 
-
 // Ja taasen tuo yllä oleva morgan(':method :url :status :res[content-length] - :response-time ms') sisältää toiminnallisuuden
 /*
 morgan(function (tokens, req, res) {
@@ -134,11 +103,20 @@ app.use(morgan('combined'))
 // HUOM! Osoitteesta https://github.com/expressjs/morgan löytyy myös ohjeet lokitiedoston kirjoittamiseen kiintolevylle
 
 
+// Sallitaan kommunikointi myös muualta kuin omalta alueelta (esim. eri portista, domainista...)
+// lisäämällä package.json tiedostoon
+// "dependencies": { "cors": "^2.8.4" }
+// tai ajamalla samassa kansiossa komentoriviltä komento npm install cors --save
+const cors = require('cors')
+// Middlewareja voi olla käytössä useita, jolloin ne suoritetaan peräkkäin siinä järjestyksessä kun ne on otettu koodissa käyttöön
+app.use(cors())
+
 // HTTP POST -pyyntöön body-osa mukaan
 const bodyParser = require('body-parser')	// Node.js-express: body-parser kirjasto https://github.com/expressjs/body-parser
 											// ottaa POST-pyyntöön liitetyn JSON-muotoisen datan ja muuntaa sen JavaScript-olioksi sekä sijoittaa sen
 											// request-olion body-kenttään ennen kuin kutsuu API-endpointin route-käsittelijää
 
+// Middlewareja voi olla käytössä useita, jolloin ne suoritetaan peräkkäin siinä järjestyksessä kun ne on otettu koodissa käyttöön
 // HTTP POST -pyyntöön body mukaan JSON muodossa
 app.use(bodyParser.json())
 
@@ -148,6 +126,39 @@ app.use(bodyParser.json())
 
 
 
+
+app.get('/', (pyynto, vastaus) =>
+	{
+		console.log('"Juureen" tehdyn pyynnön mukana tulleet headerit ovat (ALKAA)', pyynto.headers)
+		console.log('Pyynnön mukana tulleet headerit (LOPPUU)')
+	vastaus.send('<h1>Tervehdys vaan teillekin!</h1>')	// Vastauksen "send" metodi saa stringistä johtuen content-type-headerin arvoksi text/html
+	}
+)
+
+
+// Lisätään REST toteutuksen tynkää... Hae kaikki
+/*
+Node on Googlen chrome V8 -JavaScriptmoottoriin perustuva JavaScriptin suoritusympäristö,
+jolla on paketinhallintaympäristö NPM (node packet manager). Sieltä löytyy web-server paketti nimeltä Express,
+joka sisältää tarvittavat tiedostot HTTP-palvelin moduulin toteuttamiseksi.
+*/
+// Route on muotoa app.METHOD(PATH, HANDLER) oleva resurssi, jossa
+// 'app' nimiseen muuttujaan on sijoitettu Express-palvelinsovellusta vastaava olio.
+/*
+HTTP-metodi on kohdassa METHOD joko 'get', 'post', 'put' tai 'delete',
+endpoint on URI:a määrittelevä 'loremipsus'-osoite kohdassa PATH kuten esim. ('/api/persons'), ja
+tapahtuman käsittelijä on foobar(request, response) kohdassa HANDLER kuten esim. 'function (pyynto, vastaus)'
+*/
+app.get('/api/persons', (pyynto, vastaus) => {
+
+		console.log('Endpointtiin tehdyn "Hae kaikki" pyynnön mukana tulleet headerit ovat (ALKAA)', pyynto.headers)
+		console.log('Pyynnön mukana tulleet headerit (LOPPUU)')
+	vastaus.json(taulukkoonTallennettujaOlioita)	// Vastauksen "json" metodi saa content-type-headerin arvoksi application/json
+													// NodeJS-expressiä käytettäessä muunnos tapahtuu automaattisesti ilman stringify-metodia
+	})
+
+
+	
 // Lisätään REST toteutuksen tynkää... POST yksi kpl
 app.post('/api/persons', (pyynto, vastaus) => {
   const alkioOlio = pyynto.body
@@ -248,15 +259,3 @@ app.get('/info', (pyynto, vastaus) => {
 	vastaus.send('Puhelinluettelossa ' + taulukkoonTallennettujaOlioita.length + ' henkilön tiedot' + '<br />' + new Date())	// Vastauksen "json" metodi saa content-type-headerin arvoksi application/json
 													// NodeJS-expressiä käytettäessä muunnos tapahtuu automaattisesti ilman stringify-metodia
 	})
-
-
-	
-// MIDDLEWARE funktiot JATKUU alkaa
-const erhe = (pyynto, vastaus) => {
-	vastaus.status(404).send({erhe: 'Tuntematon endpoint (URI)'})
-}
-
-// Middlewareja voi olla käytössä useita, jolloin ne suoritetaan peräkkäin siinä järjestyksessä kun ne on otettu koodissa käyttöön
-app.use(erhe)
-
-// MIDDLEWARE funktiot JATKUU loppuu
