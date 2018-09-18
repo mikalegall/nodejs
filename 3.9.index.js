@@ -104,6 +104,7 @@ app.use(morgan('combined'))
 
 
 // Sallitaan kommunikointi myös muualta kuin omalta alueelta (esim. eri portista, domainista...)
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 // lisäämällä package.json tiedostoon
 // "dependencies": { "cors": "^2.8.4" }
 // tai ajamalla samassa kansiossa komentoriviltä komento npm install cors --save
