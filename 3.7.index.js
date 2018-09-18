@@ -248,3 +248,13 @@ app.get('/info', (pyynto, vastaus) => {
 	vastaus.send('Puhelinluettelossa ' + taulukkoonTallennettujaOlioita.length + ' henkilön tiedot' + '<br />' + new Date())	// Vastauksen "json" metodi saa content-type-headerin arvoksi application/json
 													// NodeJS-expressiä käytettäessä muunnos tapahtuu automaattisesti ilman stringify-metodia
 	})
+
+// MIDDLEWARE funktiot JATKUU alkaa
+const erhe = (pyynto, vastaus) => {
+	vastaus.status(404).send({erhe: 'Tuntematon endpoint (URI)'})
+}
+
+// Middlewareja voi olla käytössä useita, jolloin ne suoritetaan peräkkäin siinä järjestyksessä kun ne on otettu koodissa käyttöön
+app.use(erhe)
+
+// MIDDLEWARE funktiot JATKUU loppuu
