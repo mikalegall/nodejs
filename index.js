@@ -59,6 +59,7 @@ app.listen(PORT, () => {
 })
 */
 // Tarkistetaan onko ympäristömuuttujassa asetettu porttia ja mikäli ei ole, niin asetetaan portiksi 3001 (Heroku konfiguroi sovelluksen portin ympäristömuuttujan avulla)
+// https://mooc-fullstack-mikalegall.herokuapp.com/
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
