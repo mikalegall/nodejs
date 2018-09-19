@@ -48,7 +48,6 @@ JavaScriptissä ES6-moduulin käyttöönotossa voitaisiin sanoa myös suoraan va
 const app = express()
 
 
-
 /* const port = 3001
 app.listen(port)
 console.log(`Palvelin käynnistetty porttiin ${port}`)
